@@ -3,6 +3,7 @@ Application Configuration using Pydantic Settings
 """
 import os
 from typing import List
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -40,9 +41,11 @@ class Settings(BaseSettings):
     # Performance
     enable_tf32: bool = True  # A100/RTX 30xx 이상에서 성능 향상
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    model_config = ConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8"
+    )
+
 
 
 # 싱글톤 설정 인스턴스

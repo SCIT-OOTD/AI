@@ -3,7 +3,7 @@ Pydantic Schemas for Fitting API
 """
 from typing import List, Optional
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class GarmentCategory(str, Enum):
@@ -26,13 +26,14 @@ class GarmentItem(BaseModel):
         description="의류 이미지 (Base64 인코딩)"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "category": "top",
                 "image": "base64_encoded_image_string..."
             }
         }
+    )
 
 
 class SingleFittingRequest(BaseModel):
@@ -66,8 +67,8 @@ class SingleFittingRequest(BaseModel):
         description="랜덤 시드 (재현성 확보용)"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "person_image": "base64_encoded_person_image...",
                 "garment_image": "base64_encoded_garment_image...",
@@ -77,6 +78,7 @@ class SingleFittingRequest(BaseModel):
                 "seed": 42
             }
         }
+    )
 
 
 class MultiFittingRequest(BaseModel):
@@ -108,8 +110,8 @@ class MultiFittingRequest(BaseModel):
         description="랜덤 시드 (재현성 확보용)"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "person_image": "base64_encoded_person_image...",
                 "garments": [
@@ -121,6 +123,7 @@ class MultiFittingRequest(BaseModel):
                 "seed": 42
             }
         }
+    )
 
 
 class FittingResponse(BaseModel):
@@ -138,8 +141,8 @@ class FittingResponse(BaseModel):
         description="결과 데이터"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "status": 200,
                 "message": "피팅 성공",
@@ -149,6 +152,7 @@ class FittingResponse(BaseModel):
                 }
             }
         }
+    )
 
 
 class ErrorResponse(BaseModel):
@@ -157,11 +161,12 @@ class ErrorResponse(BaseModel):
     message: str = Field(..., description="에러 메시지")
     data: None = None
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "status": 400,
                 "message": "잘못된 이미지 형식입니다.",
                 "data": None
             }
         }
+    )

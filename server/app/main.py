@@ -1,11 +1,28 @@
 """
 FastAPI Application Entry Point
 """
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.routers import health, fitting
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    애플리케이션 수명주기 관리
+    
+    startup과 shutdown 이벤트를 통합하여 관리합니다.
+    FastAPI 권장 패턴 (on_event 대체)
+    """
+    # Startup
+    # TODO: 필요시 모델 사전 로딩
+    yield
+    # Shutdown
+    # 정리 작업
+
 
 # FastAPI 앱 생성 (Swagger 메타데이터 설정)
 app = FastAPI(
@@ -38,6 +55,7 @@ app = FastAPI(
         "name": "Non-Commercial License",
         "url": "https://github.com/Zheng-Chong/FastFit/blob/main/LICENSE.md",
     },
+    lifespan=lifespan,
 )
 
 # CORS 설정
@@ -53,15 +71,3 @@ app.add_middleware(
 app.include_router(health.router, tags=["Health"])
 app.include_router(fitting.router, prefix="/api/v1/fitting", tags=["Fitting"])
 
-
-@app.on_event("startup")
-async def startup_event():
-    """서버 시작 시 모델 로딩 (선택적)"""
-    # TODO: 필요시 모델 사전 로딩
-    pass
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """서버 종료 시 정리 작업"""
-    pass

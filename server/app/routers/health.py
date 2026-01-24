@@ -2,7 +2,7 @@
 Health Check Router
 """
 from fastapi import APIRouter, status
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
 
@@ -16,8 +16,8 @@ class HealthResponse(BaseModel):
     timestamp: str
     version: str
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "status": "healthy",
                 "message": "서버가 정상 작동 중입니다.",
@@ -25,6 +25,7 @@ class HealthResponse(BaseModel):
                 "version": "1.0.0"
             }
         }
+    )
 
 
 @router.get(
