@@ -10,7 +10,6 @@ class GarmentCategory(str, Enum):
     """의류 카테고리"""
     TOP = "top"
     BOTTOM = "bottom"
-    OUTER = "outer"
     DRESS = "dress"
     SHOES = "shoes"
     BAG = "bag"
@@ -20,7 +19,7 @@ class GarmentItem(BaseModel):
     """단일 의류 아이템"""
     category: GarmentCategory = Field(
         ...,
-        description="의류 카테고리 (top, bottom, outer, dress, shoes, bag)"
+        description="의류 카테고리 (top, bottom, dress, shoes, bag)"
     )
     image: str = Field(
         ...,
