@@ -24,7 +24,7 @@ AI/
 │   ├── requirements.txt
 │   └── Dockerfile
 ├── models/
-│   └── FastFit/            # FastFit 모델 (자동 다운로드)
+│   └── FastFit/            # FastFit 모델 (GitHub 클론 필요)
 └── sample/                 # 샘플 이미지
 ```
 
@@ -50,28 +50,42 @@ conda activate fastfit
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 ```
 
-### 4. 의존성 설치
+### 4. FastFit 모델 설치
+
+[FastFit GitHub Repository](https://github.com/Zheng-Chong/FastFit)를 클론하여 모델을 설치합니다.
+
+```bash
+cd AI/models
+git clone https://github.com/Zheng-Chong/FastFit.git
+```
+
+> **Note**: 모델 weights는 서버 최초 실행 시 Hugging Face에서 자동 다운로드됩니다.
+
+### 5. 의존성 설치
 
 ```bash
 cd AI/server
 pip install -r requirements.txt
 pip install easy-dwpose --no-dependencies
+
+# av 관련 에러 발생 시:
+conda install -c conda-forge av
 ```
 
-### 5. 환경 변수 설정
+### 6. 환경 변수 설정
 
 ```bash
 cp .env.example .env
 # 필요시 .env 파일 수정 (DEVICE, CORS 등)
 ```
 
-### 6. 서버 실행
+### 7. 서버 실행
 
 ```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 7. API 문서 접근
+### 8. API 문서 접근
 
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
