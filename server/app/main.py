@@ -38,7 +38,8 @@ app = FastAPI(
 
 ### 지원 카테고리
 - `top`: 상의
-- `bottom`: 하의  
+- `bottom`: 하의
+- `outer`: 외투
 - `dress`: 원피스/드레스
 - `shoes`: 신발
 - `bag`: 가방
