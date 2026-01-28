@@ -207,6 +207,7 @@ async def multi_fitting(request: MultiFittingRequest) -> FittingResponse:
 - **person_image**: 사용자 전신 이미지 파일 (필수)
 - **upper_image**: 상의 이미지 파일 (선택)
 - **lower_image**: 하의 이미지 파일 (선택)
+- **outer_image**: 외투 이미지 파일 (선택)
 - **dress_image**: 드레스 이미지 파일 (선택)
 - **shoe_image**: 신발 이미지 파일 (선택)
 - **bag_image**: 가방 이미지 파일 (선택)
@@ -227,6 +228,7 @@ async def multi_fitting_upload(
     person_image: UploadFile = File(..., description="사용자 전신 이미지"),
     upper_image: Optional[UploadFile] = File(None, description="상의 이미지"),
     lower_image: Optional[UploadFile] = File(None, description="하의 이미지"),
+    outer_image: Optional[UploadFile] = File(None, description="외투 이미지"),
     dress_image: Optional[UploadFile] = File(None, description="드레스 이미지"),
     shoe_image: Optional[UploadFile] = File(None, description="신발 이미지"),
     bag_image: Optional[UploadFile] = File(None, description="가방 이미지"),
@@ -238,15 +240,22 @@ async def multi_fitting_upload(
     결과는 PNG 이미지 바이너리로 반환됩니다.
     """
     try:
-        # 의류 검증: dress와 upper/lower 동시 사용 불가
+        # 의류 검증 1: dress와 upper/lower 동시 사용 불가
         if dress_image and (upper_image or lower_image):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="드레스는 상의/하의와 함께 사용할 수 없습니다."
             )
+            
+        # 의류 검증 2: outer와 dress 동시 사용 불가
+        if outer_image and dress_image:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="외투는 드레스와 함께 사용할 수 없습니다."
+            )
         
         # 최소 하나의 의류 필요
-        if not any([upper_image, lower_image, dress_image, shoe_image, bag_image]):
+        if not any([upper_image, lower_image, outer_image, dress_image, shoe_image, bag_image]):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="최소 하나의 의류 이미지가 필요합니다."
@@ -271,6 +280,12 @@ async def multi_fitting_upload(
             garments.append(GarmentItem(
                 category=GarmentCategory.BOTTOM,
                 image=await file_to_base64(lower_image)
+            ))
+        
+        if outer_image:
+            garments.append(GarmentItem(
+                category=GarmentCategory.OUTER,
+                image=await file_to_base64(outer_image)
             ))
         
         if dress_image:
